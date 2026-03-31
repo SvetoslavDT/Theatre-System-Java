@@ -2,6 +2,7 @@ package bg.uni.fmi.theatre.repository.inmemory;
 
 import bg.uni.fmi.theatre.domain.Show;
 import bg.uni.fmi.theatre.repository.ShowRepository;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Component
 public class InMemoryShowRepository implements ShowRepository {
 
     private final Map<Long, Show> store = new HashMap<>();

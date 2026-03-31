@@ -5,34 +5,31 @@ import bg.uni.fmi.theatre.domain.Performance;
 import bg.uni.fmi.theatre.domain.Show;
 import bg.uni.fmi.theatre.repository.PerformanceRepository;
 import bg.uni.fmi.theatre.repository.ShowRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ShowService {
+
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     private final ShowRepository showRepository;
     private final PerformanceRepository performanceRepository;
-    private final int defaultPageSize;
 
+    @Autowired
     public ShowService(ShowRepository showRepository, PerformanceRepository performanceRepository) {
-        this(showRepository, performanceRepository, 10);
-    }
-
-    public ShowService(ShowRepository showRepository, PerformanceRepository performanceRepository,
-                       int defaultPageSize) {
         if (showRepository == null) {
             throw new IllegalArgumentException("showRepository is required");
         } else if (performanceRepository == null) {
             throw new IllegalArgumentException("performanceRepository is required");
-        } else if (defaultPageSize <= 0) {
-            throw new IllegalArgumentException("defaultPageSize must be positive");
         }
 
         this.showRepository = showRepository;
         this.performanceRepository = performanceRepository;
-        this.defaultPageSize = defaultPageSize;
     }
 
     public Show addShow(Show show) {
