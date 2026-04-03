@@ -1,11 +1,10 @@
 package bg.uni.fmi.theatre.service;
 
 import bg.uni.fmi.theatre.config.AppLogger;
+import bg.uni.fmi.theatre.config.TheatreProperties;
 import bg.uni.fmi.theatre.domain.Genre;
 import bg.uni.fmi.theatre.domain.Show;
-import bg.uni.fmi.theatre.repository.PerformanceRepository;
 import bg.uni.fmi.theatre.repository.ShowRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -29,11 +28,11 @@ public class ShowService {
 
     private final ShowRepository showRepository;
     private final AppLogger logger;
-    private final int getDefaultPageSize;
+    private final int defaultPageSize;
 
     private final AtomicLong idSeq = new AtomicLong(100);
 
-    public ShowService(ShowRepository showRepository, AppLogger logger, ) {
+    public ShowService(ShowRepository showRepository, AppLogger logger, TheatreProperties properties) {
 //        if (showRepository == null) {
 //            throw new IllegalArgumentException("showRepository is required");
 //        } else if (performanceRepository == null) {
@@ -41,7 +40,8 @@ public class ShowService {
 //        }
 
         this.showRepository = showRepository;
-        this.performanceRepository = performanceRepository;
+        this.logger = logger;
+        this.defaultPageSize = properties.getDefaultPageSize();
     }
 
     public Show addShow(Show show) {
