@@ -1,7 +1,7 @@
 package bg.uni.fmi.theatre.service;
 
+import bg.uni.fmi.theatre.config.AppLogger;
 import bg.uni.fmi.theatre.domain.Genre;
-import bg.uni.fmi.theatre.domain.Performance;
 import bg.uni.fmi.theatre.domain.Show;
 import bg.uni.fmi.theatre.repository.PerformanceRepository;
 import bg.uni.fmi.theatre.repository.ShowRepository;
@@ -11,17 +11,29 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Service for Show CRUD operations.
+ * Accepts {@link bg.uni.fmi.theatre.dto.ShowRequest} DTOs and returns {@link bg.uni.fmi.theatre.dto.ShowResponse} DTOs;
+ * the {@link bg.uni.fmi.theatre.domain.Show} entity stays internal.
+ *
+ * <p>Layering: {@code ShowService} → {@code ShowRepository} only.
+ *
+ * @since Week 06, Task 1
+ */
 @Service
 public class ShowService {
 
     private static final int DEFAULT_PAGE_SIZE = 10;
 
     private final ShowRepository showRepository;
-    private final PerformanceRepository performanceRepository;
+    private final AppLogger logger;
+    private final int getDefaultPageSize;
 
-    @Autowired
-    public ShowService(ShowRepository showRepository, PerformanceRepository performanceRepository) {
+    private final AtomicLong idSeq = new AtomicLong(100);
+
+    public ShowService(ShowRepository showRepository, AppLogger logger, ) {
 //        if (showRepository == null) {
 //            throw new IllegalArgumentException("showRepository is required");
 //        } else if (performanceRepository == null) {

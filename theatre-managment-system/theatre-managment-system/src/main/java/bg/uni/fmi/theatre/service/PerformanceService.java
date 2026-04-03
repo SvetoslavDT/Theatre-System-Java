@@ -5,10 +5,20 @@ import bg.uni.fmi.theatre.domain.Performance;
 import bg.uni.fmi.theatre.dto.PerformanceResponse;
 import bg.uni.fmi.theatre.exception.ValidationException;
 import bg.uni.fmi.theatre.repository.PerformanceRepository;
-import com.sun.jdi.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service for Performance read operations.
+ * Uses {@link ShowService} for show-existence validation (service-to-service pattern);
+ * never accesses {@link bg.uni.fmi.theatre.repository.ShowRepository} directly.
+ *
+ * <p>Layering: {@code PerformanceService} → {@code PerformanceRepository} + {@code ShowService}.
+ *
+ * @since Week 06, Task 1
+ */
+@Service
 public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
