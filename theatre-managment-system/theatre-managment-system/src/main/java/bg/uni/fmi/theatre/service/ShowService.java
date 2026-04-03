@@ -22,11 +22,11 @@ public class ShowService {
 
     @Autowired
     public ShowService(ShowRepository showRepository, PerformanceRepository performanceRepository) {
-        if (showRepository == null) {
-            throw new IllegalArgumentException("showRepository is required");
-        } else if (performanceRepository == null) {
-            throw new IllegalArgumentException("performanceRepository is required");
-        }
+//        if (showRepository == null) {
+//            throw new IllegalArgumentException("showRepository is required");
+//        } else if (performanceRepository == null) {
+//            throw new IllegalArgumentException("performanceRepository is required");
+//        }
 
         this.showRepository = showRepository;
         this.performanceRepository = performanceRepository;
@@ -39,6 +39,30 @@ public class ShowService {
 
         return showRepository.save(show);
     }
+
+    // Not sure about this one
+//    public Show addShow(String title, String genreStr, int durationMinutes) {
+//        if (title == null || title.isBlank()) {
+//            throw new IllegalArgumentException("Title is required");
+//        }
+//
+//        Genre genre;
+//        try {
+//            genre = Genre.valueOf(genreStr.toUpperCase());
+//        } catch (Exception e) {
+//            throw new IllegalArgumentException("Invalid genre: " + genreStr);
+//        }
+//
+//        Long id = null;
+//
+//        // ако използваш InMemory repo
+//        if (showRepository instanceof bg.uni.fmi.theatre.repository.inmemory.InMemoryShowRepository repo) {
+//            id = repo.nextId();
+//        }
+//
+//        Show show = new Show(id, title, "", genre, durationMinutes, null);
+//        return showRepository.save(show);
+//    }
 
     public Optional<Show> getShowById(Long id) {
         if (showRepository.findById(id).isEmpty()) {
@@ -76,26 +100,6 @@ public class ShowService {
     }
 
     public List<Show> searchShows(String titleQuery, Genre genre) {
-        return searchShows(titleQuery, genre, 0, defaultPageSize);
-    }
-
-    public Performance addPerformance(Performance performance) {
-        if (performance == null) {
-            throw new IllegalArgumentException("Performance must not be null");
-        } else if (!showRepository.existsById(performance.getShowId())) {
-            throw new IllegalArgumentException("Show not found: " + performance.getShowId());
-        }
-
-        return performanceRepository.save(performance);
-    }
-
-    public List<Performance> findPerformancesByShow(Long showId) {
-        if (showId == null) {
-            throw new IllegalArgumentException("showId must not be null");
-        } else if (!showRepository.existsById(showId)) {
-            throw new IllegalArgumentException("Show not found: " + showId);
-        }
-
-        return performanceRepository.findByShowId(showId);
+        return searchShows(titleQuery, genre, 0, DEFAULT_PAGE_SIZE);
     }
 }
