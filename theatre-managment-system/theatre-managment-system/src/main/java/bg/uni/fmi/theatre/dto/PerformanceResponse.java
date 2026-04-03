@@ -5,6 +5,14 @@ import bg.uni.fmi.theatre.domain.PerformanceStatus;
 
 import java.time.LocalDateTime;
 
+/**
+ * Outbound DTO representing a scheduled Performance returned by
+ * {@code GET /api/performances} and {@code GET /api/performances?showId={id}}.
+ *
+ * @since Week 06, Task 1
+ * @see bg.uni.fmi.theatre.service.PerformanceService#getAllPerformances()
+ * @see bg.uni.fmi.theatre.service.PerformanceService#findPerformancesByShow(Long)
+ */
 public class PerformanceResponse {
 
     private Long id;

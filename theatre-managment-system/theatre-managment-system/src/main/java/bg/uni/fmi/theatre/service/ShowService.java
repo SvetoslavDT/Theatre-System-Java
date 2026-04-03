@@ -44,6 +44,15 @@ public class ShowService {
         this.defaultPageSize = properties.getDefaultPageSize();
     }
 
+    /**
+     * Persists a new Show.
+     * Generates an ID via an in-memory sequence (week 06 uses an in-memory repository).
+     *
+     * @param req the Show data; must not be {@code null}
+     * @return the saved Show as a {@link bg.uni.fmi.theatre.dto.ShowResponse}
+     * @throws bg.uni.fmi.theatre.exception.ValidationException if {@code req} is {@code null}
+     * @since Week 06, Task 2
+     */
     public Show addShow(Show show) {
         if (show == null) {
             throw new IllegalArgumentException("show must not be null");
