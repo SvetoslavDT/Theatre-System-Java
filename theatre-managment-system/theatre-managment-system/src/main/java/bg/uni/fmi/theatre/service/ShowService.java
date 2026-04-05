@@ -36,12 +36,6 @@ public class ShowService {
     private final AtomicLong idSeq = new AtomicLong(100);
 
     public ShowService(ShowRepository showRepository, AppLogger logger, TheatreProperties properties) {
-//        if (showRepository == null) {
-//            throw new IllegalArgumentException("showRepository is required");
-//        } else if (performanceRepository == null) {
-//            throw new IllegalArgumentException("performanceRepository is required");
-//        }
-
         this.showRepository = showRepository;
         this.logger = logger;
         this.defaultPageSize = properties.getDefaultPageSize();
@@ -67,30 +61,6 @@ public class ShowService {
 
         return ShowResponse.from(saved);
     }
-
-    // Not sure about this one
-//    public Show addShow(String title, String genreStr, int durationMinutes) {
-//        if (title == null || title.isBlank()) {
-//            throw new IllegalArgumentException("Title is required");
-//        }
-//
-//        Genre genre;
-//        try {
-//            genre = Genre.valueOf(genreStr.toUpperCase());
-//        } catch (Exception e) {
-//            throw new IllegalArgumentException("Invalid genre: " + genreStr);
-//        }
-//
-//        Long id = null;
-//
-//        // ако използваш InMemory repo
-//        if (showRepository instanceof bg.uni.fmi.theatre.repository.inmemory.InMemoryShowRepository repo) {
-//            id = repo.nextId();
-//        }
-//
-//        Show show = new Show(id, title, "", genre, durationMinutes, null);
-//        return showRepository.save(show);
-//    }
 
     /**
      * Returns a Show by its identifier.
