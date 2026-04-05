@@ -4,6 +4,7 @@ import bg.uni.fmi.theatre.config.AppLogger;
 import bg.uni.fmi.theatre.config.TheatreProperties;
 import bg.uni.fmi.theatre.domain.Genre;
 import bg.uni.fmi.theatre.domain.Show;
+import bg.uni.fmi.theatre.dto.PageResponse;
 import bg.uni.fmi.theatre.dto.ShowRequest;
 import bg.uni.fmi.theatre.dto.ShowResponse;
 import bg.uni.fmi.theatre.exception.NotFoundException;
@@ -154,7 +155,7 @@ public class ShowService {
      * @param page zero-based page index; must be &gt;= 0
      * @param size results per page; must be &gt; 0
      */
-    public List<Show> searchShows(String titleQuery, Genre genre, int page, int size) {
+    public PageResponse<ShowResponse> searchShows(String titleQuery, Genre genre, int page, int size) {
         if (page < 0) {
             throw new ValidationException("page must not be negative");
         } else if (size <= 0) {
