@@ -3,6 +3,7 @@ package bg.uni.fmi.theatre.service;
 import bg.uni.fmi.theatre.config.AppLogger;
 import bg.uni.fmi.theatre.domain.Performance;
 import bg.uni.fmi.theatre.dto.PerformanceResponse;
+import bg.uni.fmi.theatre.exception.NotFoundException;
 import bg.uni.fmi.theatre.exception.ValidationException;
 import bg.uni.fmi.theatre.repository.PerformanceRepository;
 import org.springframework.stereotype.Service;
@@ -84,5 +85,29 @@ public class PerformanceService {
         return performanceRepository.findAll().stream()
             .map(PerformanceResponse::from)
             .toList();
+    }
+
+    public PerformanceResponse updatePerformance(Long id, Performance performance) {
+        if (performance == null) {
+            throw new ValidationException("Performance must not be null");
+        }
+
+        Performance toUpdate = performanceRepository.findById(id).orElseThrow(() ->
+            new NotFoundException("Performance", id));
+        toUpdate.setStartTime(performance.getStartTime());
+        toUpdate.setStatus(performance.getStatus());
+
+        logger.info("Updating performance for id: " + id);
+        return PerformanceResponse.from(performanceRepository.save(toUpdate));
+    }
+
+    public void deletePerformance(Long id) {
+        if (id == null) {
+            throw new ValidationException("id must not be null");
+        }
+
+        performanceRepository.findById(id).orElseThrow(() -> new NotFoundException("Performance", id));
+        performanceRepository.deleteById(id);
+        logger.info("Performance deleted: id=" + id);
     }
 }

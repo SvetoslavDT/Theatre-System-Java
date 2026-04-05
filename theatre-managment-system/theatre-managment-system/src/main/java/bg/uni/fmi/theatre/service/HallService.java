@@ -2,10 +2,7 @@ package bg.uni.fmi.theatre.service;
 
 import bg.uni.fmi.theatre.config.AppLogger;
 import bg.uni.fmi.theatre.domain.Hall;
-import bg.uni.fmi.theatre.domain.Show;
-import bg.uni.fmi.theatre.dto.HallRequest;
 import bg.uni.fmi.theatre.dto.HallResponse;
-import bg.uni.fmi.theatre.dto.ShowResponse;
 import bg.uni.fmi.theatre.exception.NotFoundException;
 import bg.uni.fmi.theatre.exception.ValidationException;
 import bg.uni.fmi.theatre.repository.HallRepository;
