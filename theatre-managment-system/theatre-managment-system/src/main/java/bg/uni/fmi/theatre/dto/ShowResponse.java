@@ -1,7 +1,7 @@
 package bg.uni.fmi.theatre.dto;
 
-import bg.uni.fmi.theatre.domain.AgeRating;
-import bg.uni.fmi.theatre.domain.Genre;
+import bg.uni.fmi.theatre.vo.AgeRating;
+import bg.uni.fmi.theatre.vo.Genre;
 import bg.uni.fmi.theatre.domain.Show;
 
 /**

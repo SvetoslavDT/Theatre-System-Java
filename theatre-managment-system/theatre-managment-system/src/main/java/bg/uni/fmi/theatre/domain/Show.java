@@ -1,5 +1,8 @@
 package bg.uni.fmi.theatre.domain;
 
+import bg.uni.fmi.theatre.vo.AgeRating;
+import bg.uni.fmi.theatre.vo.Genre;
+
 import java.util.Objects;
 
 public class Show {

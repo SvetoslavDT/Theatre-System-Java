@@ -2,7 +2,7 @@ package bg.uni.fmi.theatre.service;
 
 import bg.uni.fmi.theatre.config.AppLogger;
 import bg.uni.fmi.theatre.config.TheatreProperties;
-import bg.uni.fmi.theatre.domain.Genre;
+import bg.uni.fmi.theatre.vo.Genre;
 import bg.uni.fmi.theatre.domain.Show;
 import bg.uni.fmi.theatre.dto.PageResponse;
 import bg.uni.fmi.theatre.dto.ShowRequest;

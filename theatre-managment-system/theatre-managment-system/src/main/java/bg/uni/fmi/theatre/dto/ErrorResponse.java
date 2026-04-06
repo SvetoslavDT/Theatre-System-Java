@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class ErrorResponse {
 
-    private final LocalDateTime localDateTime = LocalDateTime.now();
+    private final LocalDateTime timestamp = LocalDateTime.now();
     private final int status;
     private final String message;
     private final String path;

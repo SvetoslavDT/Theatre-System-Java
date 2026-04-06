@@ -1,7 +1,7 @@
 package bg.uni.fmi.theatre.dto;
 
 import bg.uni.fmi.theatre.domain.Performance;
-import bg.uni.fmi.theatre.domain.PerformanceStatus;
+import bg.uni.fmi.theatre.vo.PerformanceStatus;
 
 import java.time.LocalDateTime;
 
