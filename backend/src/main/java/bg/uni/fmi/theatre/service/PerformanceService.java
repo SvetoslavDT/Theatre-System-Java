@@ -1,11 +1,11 @@
 package bg.uni.fmi.theatre.service;
 
 import bg.uni.fmi.theatre.config.AppLogger;
-import bg.uni.fmi.theatre.domain.Performance;
-import bg.uni.fmi.theatre.dto.PerformanceResponse;
-import bg.uni.fmi.theatre.exception.NotFoundException;
-import bg.uni.fmi.theatre.exception.ValidationException;
-import bg.uni.fmi.theatre.repository.PerformanceRepository;
+import bg.uni.fmi.theatre.domain.*;
+import bg.uni.fmi.theatre.dto.*;
+import bg.uni.fmi.theatre.exception.*;
+import bg.uni.fmi.theatre.repository.*;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +26,9 @@ public class PerformanceService {
     private final ShowService showService;
     private final AppLogger logger;
 
-    public PerformanceService(PerformanceRepository performanceRepository, ShowService showService,
-                              AppLogger logger) {
+    public PerformanceService(PerformanceRepository performanceRepository,
+                               ShowService showService,
+                               AppLogger logger) {
         this.performanceRepository = performanceRepository;
         this.showService = showService;
         this.logger = logger;
@@ -42,15 +43,12 @@ public class PerformanceService {
      * @since Week 06, Task 1
      */
     public PerformanceResponse addPerformance(Performance performance) {
-        if (performance == null) {
-            throw new ValidationException("Performance must not be null");
-        }
-
+        if (performance == null) throw new ValidationException("Performance must not be null");
+        // Validate the show exists via ShowService — not ShowRepository
         showService.getShowById(performance.getShowId());
         logger.debug("Adding performance for show: " + performance.getShowId());
         Performance saved = performanceRepository.save(performance);
         logger.info("Performance added: id=" + saved.getId());
-
         return PerformanceResponse.from(saved);
     }
 
@@ -63,16 +61,12 @@ public class PerformanceService {
      * @since Week 06, Task 1
      */
     public List<PerformanceResponse> findPerformancesByShow(Long showId) {
-        if (showId == null) {
-            throw new ValidationException("showId must not be null");
-        }
-
+        if (showId == null) throw new ValidationException("showId must not be null");
+        // Validate show exists via service (throws 404 if not found)
         showService.getShowById(showId);
         logger.debug("Fetching performances for show: " + showId);
-
         return performanceRepository.findByShowId(showId).stream()
-            .map(PerformanceResponse::from)
-            .toList();
+                .map(PerformanceResponse::from).toList();
     }
 
     /**
@@ -83,31 +77,6 @@ public class PerformanceService {
      */
     public List<PerformanceResponse> getAllPerformances() {
         return performanceRepository.findAll().stream()
-            .map(PerformanceResponse::from)
-            .toList();
-    }
-
-    public PerformanceResponse updatePerformance(Long id, Performance performance) {
-        if (performance == null) {
-            throw new ValidationException("Performance must not be null");
-        }
-
-        Performance toUpdate = performanceRepository.findById(id).orElseThrow(() ->
-            new NotFoundException("Performance", id));
-        toUpdate.setStartTime(performance.getStartTime());
-        toUpdate.setStatus(performance.getStatus());
-
-        logger.info("Updating performance for id: " + id);
-        return PerformanceResponse.from(performanceRepository.save(toUpdate));
-    }
-
-    public void deletePerformance(Long id) {
-        if (id == null) {
-            throw new ValidationException("id must not be null");
-        }
-
-        performanceRepository.findById(id).orElseThrow(() -> new NotFoundException("Performance", id));
-        performanceRepository.deleteById(id);
-        logger.info("Performance deleted: id=" + id);
+                .map(PerformanceResponse::from).toList();
     }
 }

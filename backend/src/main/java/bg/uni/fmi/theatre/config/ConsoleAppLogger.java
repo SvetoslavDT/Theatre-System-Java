@@ -9,46 +9,32 @@ import java.time.format.DateTimeFormatter;
 @Component
 @Profile("dev")
 public class ConsoleAppLogger implements AppLogger {
-
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final LogLevel configuredLevel;
 
-    public ConsoleAppLogger(TheatreProperties theatreProperties) {
-        this.configuredLevel = theatreProperties.getLogLevel();
+    public ConsoleAppLogger(TheatreProperties properties) {
+        this.configuredLevel = properties.getLogLevel();
     }
 
-    @Override
-    public void trace(String message) {
-        if (LogLevel.TRACE.isEnabled(this.configuredLevel)) {
-            print("TRACE", message);
+    @Override public void trace(String m) {
+        if (LogLevel.TRACE.isEnabled(configuredLevel)) {
+            print("TRACE", m);
         }
     }
-
-    @Override
-    public void debug(String message) {
-        if (LogLevel.DEBUG.isEnabled(this.configuredLevel)) {
-            print("DEBUG", message);
+    @Override public void debug(String m) {
+        if (LogLevel.DEBUG.isEnabled(configuredLevel)) {
+            print("DEBUG", m);
         }
     }
-
-    @Override
-    public void info(String message) {
-        if (LogLevel.INFO.isEnabled(this.configuredLevel)) {
-            print("INFO", message);
+    @Override public void info(String m) {
+        if (LogLevel.INFO.isEnabled(configuredLevel)) {
+            print("INFO ", m);
         }
     }
+    @Override public void error(String m) { print("ERROR", m); }
+    @Override public void error(String m, Throwable t) { print("ERROR", m + " — " + t.getMessage()); }
 
-    @Override
-    public void error(String message) {
-        print("ERROR", message);
-    }
-
-    @Override
-    public void error(String message, Throwable throwable) {
-        print("ERROR", message + " - " + throwable.getMessage());
-    }
-
-    private void print(String level, String message) {
-        System.out.printf("[%s] [%s] %s%n", LocalDateTime.now().format(FMT), level, message);
+    private void print(String level, String msg) {
+        System.out.printf("[%s] [%s] %s%n", LocalDateTime.now().format(FMT), level, msg);
     }
 }

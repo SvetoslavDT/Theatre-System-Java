@@ -1,8 +1,8 @@
 package bg.uni.fmi.theatre.dto;
 
-import bg.uni.fmi.theatre.vo.AgeRating;
-import bg.uni.fmi.theatre.vo.Genre;
-import bg.uni.fmi.theatre.domain.Show;
+import bg.uni.fmi.theatre.domain.*;
+import bg.uni.fmi.theatre.vo.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Outbound DTO representing a {@link bg.uni.fmi.theatre.domain.Show}.
@@ -12,7 +12,6 @@ import bg.uni.fmi.theatre.domain.Show;
  * @since Week 06, Task 2
  */
 public class ShowResponse {
-
     private Long id;
     private String title;
     private String description;
@@ -20,9 +19,12 @@ public class ShowResponse {
     private int durationMinutes;
     private AgeRating ageRating;
 
+    /**
+     * Converts a {@link bg.uni.fmi.theatre.domain.Show} entity to a {@code ShowResponse}.
+     * Called exclusively by the service layer.
+     */
     public static ShowResponse from(Show show) {
         ShowResponse r = new ShowResponse();
-
         r.id = show.getId();
         r.title = show.getTitle();
         r.description = show.getDescription();

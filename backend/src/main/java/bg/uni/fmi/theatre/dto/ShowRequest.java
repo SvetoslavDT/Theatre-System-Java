@@ -3,8 +3,11 @@ package bg.uni.fmi.theatre.dto;
 import bg.uni.fmi.theatre.vo.AgeRating;
 import bg.uni.fmi.theatre.vo.Genre;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 /**
  * Inbound DTO for creating or updating a {@link bg.uni.fmi.theatre.domain.Show}.
@@ -15,9 +18,8 @@ import jakarta.validation.constraints.Size;
  * @see bg.uni.fmi.theatre.service.ShowService#updateShow(Long, ShowRequest)
  */
 public class ShowRequest {
-
     @NotBlank(message = "title is required")
-    @Size(max = 100, message = "title has to be max 100 characters")
+    @Size(max = 100, message = "title must be at most 100 characters")
     private String title;
     private String description;
     private Genre genre;

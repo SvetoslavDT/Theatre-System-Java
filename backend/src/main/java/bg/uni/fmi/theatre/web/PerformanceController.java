@@ -5,18 +5,22 @@ import bg.uni.fmi.theatre.service.PerformanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for Performance resources.
+ *
+ * @since Week 06, Task 1
+ */
 @RestController
 @RequestMapping("/api/performances")
+@Tag(name = "Performances", description = "Query scheduled performances")
 public class PerformanceController {
 
-    PerformanceService performanceService;
+    private final PerformanceService performanceService;
 
     public PerformanceController(PerformanceService performanceService) {
         this.performanceService = performanceService;
@@ -27,10 +31,10 @@ public class PerformanceController {
     @ApiResponse(responseCode = "200", description = "List of performances")
     @ApiResponse(responseCode = "404", description = "Show not found (when showId is provided but invalid)")
     public List<PerformanceResponse> listPerformances(
-        @Parameter(description = "Filter by show ID")
-        @RequestParam(required = false) Long showID) {
-
-        return showID != null ? performanceService.findPerformancesByShow(showID) :
-            performanceService.getAllPerformances();
+            @Parameter(description = "Filter by show ID")
+            @RequestParam(required = false) Long showId) {
+        return showId != null
+                ? performanceService.findPerformancesByShow(showId)
+                : performanceService.getAllPerformances();
     }
 }

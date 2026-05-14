@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: theatre-management-system
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=theatre
+    username: postgres
+    password: 123456789
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yaml
+    default-schema: theatre
+    liquibase-schema: theatre
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      # Liquibase owns the schema — do NOT let Hibernate create/alter tables.
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: theatre
+        format_sql: true
+    show-sql: true
+
+
+server:
+  port: 8080
+
+theatre:
+  reservation-hold-minutes: 15
+  default-page-size: 10
+  log-level: INFO
+  log-file: logs/theatre.log
+
+logging:
+  level:
+    root: WARN
+    bg.uni.fmi.theatre: INFO

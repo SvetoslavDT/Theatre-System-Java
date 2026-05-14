@@ -1,5 +1,4 @@
 package bg.uni.fmi.theatre.vo;
 
-public enum PerformanceStatus {
-    SCHEDULED, CANCELLED, FINISHED
-}
+/** Value object: lifecycle state of a scheduled performance. */
+public enum PerformanceStatus { SCHEDULED, CANCELLED, FINISHED }

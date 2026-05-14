@@ -7,20 +7,38 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
+
+
+
+
+
+
+
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(NotFoundException ex, HttpServletRequest request) {
-        return new ErrorResponse(404, ex.getMessage(), request.getRequestURI());
+        // fetch excaption ,messages
+        // mod error message
+        // return it
+
+        //Validate Exceptioin
+        // collect all validation errors
+        // return
+
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), request.getRequestURI());
     }
+
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -30,11 +48,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    public ErrorResponse handleBindValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = ex.getBindingResult().getFieldErrors().stream()
-            .map(FieldError::getDefaultMessage)
-            .collect(Collectors.joining("; "));
-
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining("; "));
         return new ErrorResponse(400, message, request.getRequestURI());
     }
 

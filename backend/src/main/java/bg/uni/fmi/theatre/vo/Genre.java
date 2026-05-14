@@ -1,5 +1,4 @@
 package bg.uni.fmi.theatre.vo;
 
-public enum Genre {
-    DRAMA, COMEDY, MUSICAL, OPERA, BALLET, THRILLER, CHILDREN
-}
+/** Value object: classifies the artistic genre of a show. */
+public enum Genre { DRAMA, COMEDY, MUSICAL, OPERA, BALLET, THRILLER, CHILDREN }

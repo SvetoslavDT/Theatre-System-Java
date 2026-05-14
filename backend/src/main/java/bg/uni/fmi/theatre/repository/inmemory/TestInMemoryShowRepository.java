@@ -5,16 +5,12 @@ import bg.uni.fmi.theatre.repository.ShowRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 @Profile("test")
 public class TestInMemoryShowRepository implements ShowRepository {
-
     private final Map<Long, Show> store = new HashMap<>();
     private final AtomicLong seq = new AtomicLong(1);
 
@@ -24,5 +20,4 @@ public class TestInMemoryShowRepository implements ShowRepository {
     @Override public void deleteById(Long id) { store.remove(id); }
     @Override public boolean existsById(Long id) { return store.containsKey(id); }
     public long nextId() { return seq.getAndIncrement(); }
-
 }

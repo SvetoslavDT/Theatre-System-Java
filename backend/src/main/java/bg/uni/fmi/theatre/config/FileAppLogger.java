@@ -3,62 +3,45 @@ package bg.uni.fmi.theatre.config;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
 @Profile("prod")
 public class FileAppLogger implements AppLogger {
-
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final LogLevel configuredLevel;
     private final String logFilePath;
 
-    public FileAppLogger(TheatreProperties theatreProperties) {
-
-        this.configuredLevel = theatreProperties.getLogLevel();
-        this.logFilePath = theatreProperties.getLogFile();
-        // new File(logFilePath).getParentFile().mkdirs();
+    public FileAppLogger(TheatreProperties properties) {
+        this.configuredLevel = properties.getLogLevel();
+        this.logFilePath = properties.getLogFile();
+        new File(logFilePath).getParentFile().mkdirs();
     }
 
-    @Override
-    public void trace(String message) {
+    @Override public void trace(String m) {
         if (LogLevel.TRACE.isEnabled(configuredLevel)) {
-            write("Trace", message);
+            write("TRACE", m);
         }
     }
-
-    @Override
-    public void debug(String message) {
+    @Override public void debug(String m) {
         if (LogLevel.DEBUG.isEnabled(configuredLevel)) {
-            write("DEBUG", message);
+            write("DEBUG", m);
         }
     }
-
-    @Override
-    public void info(String message) {
+    @Override public void info(String m) {
         if (LogLevel.INFO.isEnabled(configuredLevel)) {
-            write("INFO", message);
+            write("INFO ", m);
         }
     }
+    @Override public void error(String m) { write("ERROR", m); }
+    @Override public void error(String m, Throwable t) { write("ERROR", m + " — " + t.getMessage()); }
 
-    @Override
-    public void error(String message) {
-        write("ERROR", message);
-    }
-
-    @Override
-    public void error(String message, Throwable throwable) {
-        write("ERROR", message +  " - " + throwable.getMessage());
-    }
-
-    private void write(String level, String message) {
-        String line = String.format("[%s] [%s] %s%n", LocalDateTime.now().format(FMT), level, message);
-        try (PrintWriter out = new PrintWriter(new FileWriter(logFilePath, true))) {
-            out.print(line);
+    private void write(String level, String msg) {
+        String line = String.format("[%s] [%s] %s%n", LocalDateTime.now().format(FMT), level, msg);
+        try (PrintWriter pw = new PrintWriter(new FileWriter(logFilePath, true))) {
+            pw.print(line);
         } catch (IOException e) {
             System.err.println("Log write failed: " + e.getMessage());
         }

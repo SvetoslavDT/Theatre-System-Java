@@ -1,8 +1,7 @@
 package bg.uni.fmi.theatre.dto;
 
-import bg.uni.fmi.theatre.domain.Performance;
-import bg.uni.fmi.theatre.vo.PerformanceStatus;
-
+import bg.uni.fmi.theatre.domain.*;
+import bg.uni.fmi.theatre.vo.*;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
  * @see bg.uni.fmi.theatre.service.PerformanceService#findPerformancesByShow(Long)
  */
 public class PerformanceResponse {
-
     private Long id;
     private Long showId;
     private Long hallId;
