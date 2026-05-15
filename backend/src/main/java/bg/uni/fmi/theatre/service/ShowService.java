@@ -51,8 +51,8 @@ public class ShowService {
      */
     public ShowResponse addShow(ShowRequest req) {
         if (req == null) throw new ValidationException("Show must not be null");
-        Show show = new Show(idSeq.getAndIncrement(), req.getTitle(), req.getDescription(),
-                req.getGenre(), req.getDurationMinutes(), req.getAgeRating());
+        Show show = new Show(req.getTitle(), req.getDescription(),
+            req.getGenre(), req.getDurationMinutes(), req.getAgeRating());
         logger.debug("Adding show: " + show.getTitle());
         Show saved = showRepository.save(show);
         logger.info("Show added: [" + saved.getId() + "] " + saved.getTitle());
@@ -99,9 +99,9 @@ public class ShowService {
      * Results are sorted alphabetically by title.
      *
      * @param titleQuery case-insensitive title substring (nullable/blank = no filter)
-     * @param genre genre filter (null = all genres)
-     * @param page zero-based page index; must be &gt;= 0
-     * @param size results per page; must be &gt; 0
+     * @param genre      genre filter (null = all genres)
+     * @param page       zero-based page index; must be &gt;= 0
+     * @param size       results per page; must be &gt; 0
      * @since Week 06, Task 4
      */
     public PageResponse<ShowResponse> searchShows(String titleQuery, Genre genre, int page, int size) {
@@ -110,19 +110,19 @@ public class ShowService {
         logger.debug("Searching shows — title='" + titleQuery + "', genre=" + genre + ", page=" + page);
 
         List<ShowResponse> allResults = showRepository.findAll().stream()
-                .filter(s -> titleQuery == null || titleQuery.isBlank()
-                        || s.getTitle().toLowerCase().contains(titleQuery.toLowerCase()))
-                .filter(s -> genre == null || genre.equals(s.getGenre()))
-                .sorted(Comparator.comparing(Show::getTitle))
-                .map(ShowResponse::from)
-                .collect(Collectors.toList());
+            .filter(s -> titleQuery == null || titleQuery.isBlank()
+                || s.getTitle().toLowerCase().contains(titleQuery.toLowerCase()))
+            .filter(s -> genre == null || genre.equals(s.getGenre()))
+            .sorted(Comparator.comparing(Show::getTitle))
+            .map(ShowResponse::from)
+            .collect(Collectors.toList());
 
         long total = allResults.size();
         logger.info("Search returned " + total + " total results");
         int fromIndex = page * size;
         List<ShowResponse> pageContent = fromIndex >= allResults.size()
-                ? List.of()
-                : allResults.subList(fromIndex, Math.min(fromIndex + size, allResults.size()));
+            ? List.of()
+            : allResults.subList(fromIndex, Math.min(fromIndex + size, allResults.size()));
         return new PageResponse<>(pageContent, page, size, total);
     }
 
@@ -148,7 +148,7 @@ public class ShowService {
      */
     public ShowResponse updateShow(Long id, ShowRequest req) {
         Show existing = showRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Show", id));
+            .orElseThrow(() -> new NotFoundException("Show", id));
         existing.setTitle(req.getTitle());
         existing.setDescription(req.getDescription());
         existing.setGenre(req.getGenre());

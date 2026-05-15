@@ -23,30 +23,35 @@ import java.util.List;
 public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
-    private final ShowService showService;
+    private final ShowRepository showRepository;
+    private final HallRepository hallRepository;
     private final AppLogger logger;
 
     public PerformanceService(PerformanceRepository performanceRepository,
-                               ShowService showService,
-                               AppLogger logger) {
+                              ShowRepository showRepository,
+                              HallRepository hallRepository,
+                              AppLogger logger) {
         this.performanceRepository = performanceRepository;
-        this.showService = showService;
+        this.showRepository = showRepository;
+        this.hallRepository = hallRepository;
         this.logger = logger;
     }
 
     /**
-     * Persists a new Performance, first verifying the associated Show exists via {@link ShowService}.
+     * Persists a new Performance using PerformanceRequest DTO.
      *
-     * @param performance the Performance to save; showId must reference an existing Show
+     * @param req the PerformanceRequest containing showId, hallId, and startTime
      * @return the saved Performance as a {@link bg.uni.fmi.theatre.dto.PerformanceResponse}
-     * @throws bg.uni.fmi.theatre.exception.NotFoundException if the referenced Show does not exist
-     * @since Week 06, Task 1
+     * @throws bg.uni.fmi.theatre.exception.NotFoundException if the referenced Show or Hall does not exist
+     * @since Week 09
      */
-    public PerformanceResponse addPerformance(Performance performance) {
-        if (performance == null) throw new ValidationException("Performance must not be null");
-        // Validate the show exists via ShowService — not ShowRepository
-        showService.getShowById(performance.getShowId());
-        logger.debug("Adding performance for show: " + performance.getShowId());
+    public PerformanceResponse addPerformance(PerformanceRequest req) {
+        Show show = showRepository.findById(req.getShowId())
+            .orElseThrow(() -> new NotFoundException("Show", req.getShowId()));
+        Hall hall = hallRepository.findById(req.getHallId())
+            .orElseThrow(() -> new NotFoundException("Hall", req.getHallId()));
+
+        Performance performance = new Performance(show, hall, req.getStartTime());
         Performance saved = performanceRepository.save(performance);
         logger.info("Performance added: id=" + saved.getId());
         return PerformanceResponse.from(saved);
@@ -54,19 +59,20 @@ public class PerformanceService {
 
     /**
      * Returns all Performances for a given Show.
-     * Validates the Show exists via {@link ShowService#getShowById(Long)} before querying.
+     * Validates the Show exists before querying.
      *
      * @param showId must not be {@code null}
      * @throws bg.uni.fmi.theatre.exception.NotFoundException if no Show exists for {@code showId}
-     * @since Week 06, Task 1
+     * @since Week 06, Task 1 (updated for Week 09)
      */
     public List<PerformanceResponse> findPerformancesByShow(Long showId) {
         if (showId == null) throw new ValidationException("showId must not be null");
-        // Validate show exists via service (throws 404 if not found)
-        showService.getShowById(showId);
+        // Validate show exists (throws 404 if not found)
+        showRepository.findById(showId)
+            .orElseThrow(() -> new NotFoundException("Show", showId));
         logger.debug("Fetching performances for show: " + showId);
         return performanceRepository.findByShowId(showId).stream()
-                .map(PerformanceResponse::from).toList();
+            .map(PerformanceResponse::from).toList();
     }
 
     /**
@@ -77,6 +83,6 @@ public class PerformanceService {
      */
     public List<PerformanceResponse> getAllPerformances() {
         return performanceRepository.findAll().stream()
-                .map(PerformanceResponse::from).toList();
+            .map(PerformanceResponse::from).toList();
     }
 }

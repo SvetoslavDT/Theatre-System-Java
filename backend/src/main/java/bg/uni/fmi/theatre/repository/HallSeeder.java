@@ -17,10 +17,10 @@ public class HallSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-//        if (halls.count() > 0) return;
-//
-//        halls.save(new Hall("Main Stage", 500));
-//        halls.save(new Hall("Studio Theatre", 120));
-//        halls.save(new Hall("Open Air Amphitheatre", 800));
+        if (halls.count() > 0) return;
+
+        halls.save(new Hall("Main Stage", 500));
+        halls.save(new Hall("Studio Theatre", 120));
+        halls.save(new Hall("Open Air Amphitheatre", 800));
     }
 }

@@ -23,7 +23,7 @@ public class ReservationService {
     private final PerformanceRepository performanceRepository;
 
     public ReservationService(ReservationRepository reservationRepository,
-                               PerformanceRepository performanceRepository) {
+                              PerformanceRepository performanceRepository) {
         this.reservationRepository = reservationRepository;
         this.performanceRepository = performanceRepository;
     }
@@ -43,20 +43,20 @@ public class ReservationService {
     @Transactional
     public ReservationResponse bookSeat(ReservationRequest req) {
         Performance performance = performanceRepository.findById(req.getPerformanceId())
-                .orElseThrow(() -> new NotFoundException("Performance", req.getPerformanceId()));
+            .orElseThrow(() -> new NotFoundException("Performance", req.getPerformanceId()));
 
         if (performance.getStatus() != PerformanceStatus.SCHEDULED) {
             throw new ValidationException("Cannot book seats for a "
-                    + performance.getStatus().name().toLowerCase() + " performance");
+                + performance.getStatus().name().toLowerCase() + " performance");
         }
 
         if (reservationRepository.existsByPerformanceIdAndSeatLabel(
-                req.getPerformanceId(), req.getSeatLabel())) {
+            req.getPerformanceId(), req.getSeatLabel())) {
             throw new ValidationException("Seat " + req.getSeatLabel() + " is already booked");
         }
 
         Reservation reservation = new Reservation(
-                performance, req.getSeatLabel(), req.getCustomerName());
+            performance, req.getSeatLabel(), req.getCustomerName());
         Reservation saved = reservationRepository.save(reservation);
 
         return ReservationResponse.from(saved);
@@ -65,7 +65,7 @@ public class ReservationService {
     @Transactional
     public void cancelReservation(Long id) {
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Reservation", id));
+            .orElseThrow(() -> new NotFoundException("Reservation", id));
         reservation.setStatus(ReservationStatus.CANCELLED);
         // no explicit save() needed — the entity is managed within the transaction,
         // so Hibernate's dirty checking flushes the change at commit time.
@@ -74,10 +74,10 @@ public class ReservationService {
     public List<ReservationResponse> findByPerformance(Long performanceId) {
         // Validate performance exists
         performanceRepository.findById(performanceId)
-                .orElseThrow(() -> new NotFoundException("Performance", performanceId));
+            .orElseThrow(() -> new NotFoundException("Performance", performanceId));
 
         return reservationRepository.findByPerformanceId(performanceId).stream()
-                .map(ReservationResponse::from)
-                .toList();
+            .map(ReservationResponse::from)
+            .toList();
     }
 }

@@ -1,30 +1,62 @@
 package bg.uni.fmi.theatre.domain;
 import bg.uni.fmi.theatre.vo.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "performance")
 public class Performance {
-    private final Long id;
-    private final Long showId;
-    private final Long hallId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "show_id", nullable = false)
+    private Show show;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hall_id", nullable = false)
+    private Hall hall;
+
+    @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PerformanceStatus status;
 
-    public Performance(Long id, Long showId, Long hallId, LocalDateTime startTime) {
-        if (showId == null) throw new IllegalArgumentException("showId is required");
-        if (hallId == null) throw new IllegalArgumentException("hallId is required");
+    @Version
+    private Long version;
+
+    protected Performance() {}
+
+    public Performance(Show show, Hall hall, LocalDateTime startTime) {
+        if (show == null) throw new IllegalArgumentException("show is required");
+        if (hall == null) throw new IllegalArgumentException("hall is required");
         if (startTime == null) throw new IllegalArgumentException("startTime is required");
-        this.id = id;
-        this.showId = showId;
-        this.hallId = hallId;
+        this.show = show;
+        this.hall = hall;
         this.startTime = startTime;
         this.status = PerformanceStatus.SCHEDULED;
     }
 
+    // getters, setters, equals/hashCode
     public Long getId() { return id; }
-    public Long getShowId() { return showId; }
-    public Long getHallId() { return hallId; }
+    public Show getShow() { return show; }
+    public Hall getHall() { return hall; }
     public LocalDateTime getStartTime() { return startTime; }
     public PerformanceStatus getStatus() { return status; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
@@ -37,6 +69,6 @@ public class Performance {
     }
     @Override public int hashCode() { return Objects.hash(id); }
     @Override public String toString() {
-        return "Performance{id=" + id + ", showId=" + showId + ", start=" + startTime + ", status=" + status + "}";
+        return "Performance{id=" + id + ", show=" + show.getTitle() + ", hall=" + hall.getName() + ", start=" + startTime + ", status=" + status + "}";
     }
 }

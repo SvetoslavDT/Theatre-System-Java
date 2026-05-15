@@ -4,7 +4,9 @@ import bg.uni.fmi.theatre.dto.ErrorResponse;
 import bg.uni.fmi.theatre.exception.NotFoundException;
 import bg.uni.fmi.theatre.exception.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -14,31 +16,14 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
-
-
-
-
-
-
-
-
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(NotFoundException ex, HttpServletRequest request) {
-        // fetch excaption ,messages
-        // mod error message
-        // return it
-
-        //Validate Exceptioin
-        // collect all validation errors
-        // return
-
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), request.getRequestURI());
+    public ResponseEntity<ErrorResponse> handleNotFound(
+        NotFoundException ex, HttpServletRequest req) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(new ErrorResponse(404, ex.getMessage(), req.getRequestURI()));
     }
 
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
-
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -46,12 +31,21 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(400, ex.getMessage(), request.getRequestURI());
     }
 
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleOptimisticLock(OptimisticLockingFailureException ex,
+                                              HttpServletRequest request) {
+        return new ErrorResponse(409,
+            "The resource was modified by another request. Please retry.",
+            request.getRequestURI());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBindValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String message = ex.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .collect(Collectors.joining("; "));
+            .map(FieldError::getDefaultMessage)
+            .collect(Collectors.joining("; "));
         return new ErrorResponse(400, message, request.getRequestURI());
     }
 
